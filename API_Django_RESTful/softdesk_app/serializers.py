@@ -5,15 +5,8 @@ from softdesk_app.models import User, Contributor, Project, Issue, Comment
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name']
-
-
-class ContributorSerializer(ModelSerializer):
-    class Meta:
-        model = Contributor
-        fields = ['id', 'user', 'project', 'permission', 'role']
+        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'password']
         read_only_fields = ['id']
-
 
 class ProjectSerializer(ModelSerializer):
     class Meta:
@@ -43,4 +36,20 @@ class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'description', 'author_user', 'issue', 'created_time']
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'author_user', 'issue', 'created_time']
+
+    def create(self, validated_data):
+        validated_data['issue'] = Issue.objects.get(pk=self.context['issue_id'])
+        validated_data['author_user'] = self.context['request'].user
+        return Comment.objects.create(**validated_data)
+
+
+class ContributorSerializer(ModelSerializer):
+    class Meta:
+        model = Contributor
+        fields = ['id', 'user', 'project', 'permission', 'role']
+        read_only_fields = ['id', 'project']
+
+    def create(self, validated_data):
+        validated_data['project'] = Project.objects.get(pk=self.context['project_id'])
+        return Comment.objects.create(**validated_data)

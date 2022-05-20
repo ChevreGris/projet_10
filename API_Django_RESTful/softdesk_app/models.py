@@ -3,20 +3,11 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-
     def is_owner(self, project_id):
         return Project.objects.filter(pk=project_id, author_user=self).exists()
 
     def is_contributor(self, project_id):
         return self.is_owner(project_id) or Contributor.objects.filter(user=self, project=project_id).exists()
-
-
-class Contributor(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
-    project = models.ForeignKey('Project', on_delete=models.CASCADE)
-    permission = models.BooleanField()
-    role = models.CharField(max_length=255)
-
 
 
 class Project(models.Model):
@@ -64,3 +55,14 @@ class Comment(models.Model):
     author_user = models.ForeignKey('User', on_delete=models.CASCADE)
     issue = models.ForeignKey('Issue', on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True)
+
+
+class Contributor(models.Model):
+    CHOIX = [('oui', 'oui'),
+              ('non', 'non')
+    ]
+
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    project = models.ForeignKey('Project', on_delete=models.CASCADE)
+    permission = models.CharField(max_length=255, choices=CHOIX)
+    role = models.CharField(max_length=255)
