@@ -46,5 +46,13 @@ class CommentViewSet(ModelViewSet):
 
 class ContributorViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated, HasContributorPermission]
-    queryset = Contributor.objects.all()
     serializer_class = ContributorSerializer
+
+    def get_queryset(self):
+        return Contributor.objects.filter(project_id=self.kwargs['project_id'])
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['project_id'] = self.kwargs['project_id']
+        return context
+        

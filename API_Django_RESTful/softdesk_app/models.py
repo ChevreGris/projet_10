@@ -58,11 +58,11 @@ class Comment(models.Model):
 
 
 class Contributor(models.Model):
-    CHOIX = [('oui', 'oui'),
-              ('non', 'non')
+    CHOICE = [('YES', 'yes'),
+              ('NO', 'no')
     ]
 
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     project = models.ForeignKey('Project', on_delete=models.CASCADE)
-    permission = models.CharField(max_length=255, choices=CHOIX)
+    permission = models.CharField(max_length=255, choices=CHOICE)
     role = models.CharField(max_length=255)

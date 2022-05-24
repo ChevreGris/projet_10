@@ -52,4 +52,4 @@ class ContributorSerializer(ModelSerializer):
 
     def create(self, validated_data):
         validated_data['project'] = Project.objects.get(pk=self.context['project_id'])
-        return Comment.objects.create(**validated_data)
+        return Contributor.objects.create(**validated_data)

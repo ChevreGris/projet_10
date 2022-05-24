@@ -1,4 +1,3 @@
-import pdb
 from rest_framework.permissions import BasePermission
 
 
@@ -34,4 +33,6 @@ class HasIssueCommentPermission(BasePermission):
 
 class HasContributorPermission(BasePermission):
     def has_permission(self, request, view):
-        return True
+        if view.action in ['retrieve', 'list', 'create', 'update', 'partial_update', 'destroy']:
+            return request.user.is_owner(view.kwargs['project_id'])
+            
